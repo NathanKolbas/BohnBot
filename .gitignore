@@ -1,0 +1,10 @@
+# Editors
+.idea
+
+VideoEditing
+__pycache__
+output.gif
+
+# Ignore the config for security reasons
+config.json
+/logs
