@@ -101,7 +101,7 @@ async def on_message(message):
             file = helper.random_stretch_break()
             await message.channel.send(msg, file=discord.File(file, 'can_anyone_hear_me.gif'))
         elif commands[0].lower() == 'new':
-            msg = """ 
+            msg = """
 New features/improvements/commands:\n
 • Added Tweet functionality!
     - You can now use `BohnBot tweet` to get a random tweet or `BohnBot recent-tweet` to get his most recent tweet.
@@ -109,7 +109,7 @@ New features/improvements/commands:\n
 """
             await message.channel.send(msg)
         elif commands[0].lower() == 'help':
-            msg = """ 
+            msg = """
 The current available BohnBot commands are:\n
 • `BohnBot execute @UserName`
     - Creates a gif of that user getting killed in Among Us
@@ -142,6 +142,8 @@ The current available BohnBot commands are:\n
     - Gets the most recent tweet from DocBohn\n
 • `BohnBot new`
     - Tells you about what is new, features, improvements, and/or commands for the most recent update\n
+• `BohnBot bohn @username`
+    - "Bohns" the mentioned user\n
 Created by: Nathan Kolbas - <https://github.com/NathanKolbas/BohnBot>
 """
             await message.channel.send(msg)
@@ -155,6 +157,17 @@ Created by: Nathan Kolbas - <https://github.com/NathanKolbas/BohnBot>
         elif commands[0].lower() == 'recent-tweet':
             msg = helper.most_recent_tweet()
             await message.channel.send(msg)
+        elif commands[0].lower() == 'bohn':
+            try:
+                tagged = message.mentions[0].name
+                if tagged == "kalen":
+                    await message.channel.send("I will not bohn my creator")
+                    return
+                response = ("You've been bohned " + str(tagged))
+                await message.channel.send(response)
+                return
+            except:
+                await message.channel.send("[Usage]: BohnBot bohn @username")
 
 
 @client.event
