@@ -16,10 +16,11 @@ Create a `config.json` file in the root directory of the project. This will stor
 {
     "BOT_TOKEN": "bot_token",
     "GIS_DEV_API_KEY": "gis_api",
-    "GIS_PROJECT_CX": "cx_project"
+    "GIS_PROJECT_CX": "cx_project",
+    "TWITTER_BEARER_TOKEN": "twitter_token"
 }
 ```
-The `BOT_TOKEN` is your Discord API key. Both `GIS_DEV_API_KEY` and `GIS_PROJECT_CX` are for Google image searching. Documentation for how to setup image search keys can be found [here](https://github.com/arrrlo/Google-Images-Search).
+The `BOT_TOKEN` is your Discord API key. Both `GIS_DEV_API_KEY` and `GIS_PROJECT_CX` are for Google image searching. Documentation for how to setup image search keys can be found [here](https://github.com/arrrlo/Google-Images-Search). `TWITTER_BEARER_TOKEN` is used by the Twitter API to get tweets. You will need to setup a Twitter developer account and create a new project found [here](https://developer.twitter.com/en/apply-for-access).
 
 ## Documentation
 After adding the BohnBot to your Discord server, you can run the following commands:
@@ -48,6 +49,10 @@ After adding the BohnBot to your Discord server, you can run the following comma
     - Starts a stretch break 
   - `BohnBot quine`
     - One of Bohn's favorite puzzles
+  - `BohnBot tweet`
+    - Gets a random tweet from DocBohn. (Limited to first 200 most recent tweets)
+  - `BohnBot recent-tweet`
+    - Gets the most recent tweet from DocBohn
   - `BohnBot new`
     - Tells you about what is new, features, improvements, and/or commands for the most recent update
   - `BohnBot help`

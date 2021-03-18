@@ -16,7 +16,13 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
-    if message.content.lower().startswith('bohnbot ') or client.user in message.mentions:
+
+    if message.mentions and client.user == message.mentions[0] and message.content[-1] == '?':
+        helper = Helper(message.author)
+        msg = helper.random_quote()
+        await message.channel.send(msg)
+
+    if message.content.lower().startswith('bohnbot '):
         helper = Helper(message.author)
         commands = message.content.split(' ', 2)
         del commands[0]
@@ -87,20 +93,19 @@ async def on_message(message):
             else:
                 msg = 'You do not have the permissions to delete a quote (Administrator permission needed).'
             await message.channel.send(msg)
-        elif message.content[-1] == '?':
-            msg = helper.random_quote()
+        elif commands[0].lower() == 'markov':
+            msg = helper.markov()
             await message.channel.send(msg)
         elif commands[0].lower() == 'stretch-break':
             msg = ":rotating_light: Stretch Break :rotating_light:"
             file = helper.random_stretch_break()
             await message.channel.send(msg, file=discord.File(file, 'can_anyone_hear_me.gif'))
-        elif commands[0].lower() == 'markov':
-            msg = helper.markov()
-            await message.channel.send(msg)
         elif commands[0].lower() == 'new':
             msg = """ 
 New features/improvements/commands:\n
-• BohnBot has been released into the wild.
+• Added Tweet functionality!
+    - You can now use `BohnBot tweet` to get a random tweet or `BohnBot recent-tweet` to get his most recent tweet.
+    - This is limited to the first 200 tweets and will ignore retweets and responses.
 """
             await message.channel.send(msg)
         elif commands[0].lower() == 'help':
@@ -131,6 +136,10 @@ The current available BohnBot commands are:\n
     - Starts a stretch break\n
 • `BohnBot quine`
     - One of Bohn's favorite puzzles\n
+• `BohnBot tweet`
+    - Gets a random tweet from DocBohn. (Limited to first 200 most recent tweets)\n
+• `BohnBot recent-tweet`
+    - Gets the most recent tweet from DocBohn\n
 • `BohnBot new`
     - Tells you about what is new, features, improvements, and/or commands for the most recent update\n
 Created by: Nathan Kolbas - <https://github.com/NathanKolbas/BohnBot>
@@ -140,6 +149,12 @@ Created by: Nathan Kolbas - <https://github.com/NathanKolbas/BohnBot>
             files = helper.quine()
             for file in files:
                 await message.channel.send(file)
+        elif commands[0].lower() == 'tweet':
+            msg = helper.random_tweet()
+            await message.channel.send(msg)
+        elif commands[0].lower() == 'recent-tweet':
+            msg = helper.most_recent_tweet()
+            await message.channel.send(msg)
 
 
 @client.event
