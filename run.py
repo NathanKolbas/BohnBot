@@ -16,7 +16,13 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
-    if message.content.lower().startswith('bohnbot ') or client.user in message.mentions:
+
+    if message.mentions and client.user == message.mentions[0] and message.content[-1] == '?':
+        helper = Helper(message.author)
+        msg = helper.random_quote()
+        await message.channel.send(msg)
+
+    if message.content.lower().startswith('bohnbot '):
         helper = Helper(message.author)
         commands = message.content.split(' ', 2)
         del commands[0]
@@ -89,9 +95,6 @@ async def on_message(message):
             await message.channel.send(msg)
         elif commands[0].lower() == 'markov':
             msg = helper.markov()
-            await message.channel.send(msg)
-        elif message.content[-1] == '?':
-            msg = helper.random_quote()
             await message.channel.send(msg)
         elif commands[0].lower() == 'stretch-break':
             msg = ":rotating_light: Stretch Break :rotating_light:"

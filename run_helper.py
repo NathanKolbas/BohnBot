@@ -29,6 +29,10 @@ class Helper:
         :return: Integer value of the line the quote was added to
         """
         self.log(f'User {self.author} added a new quote: {quote}')
+        # If the quote doesn't have "" around it then add it
+        if not quote.startswith("\"") and not quote.endswith("\""):
+            quote = f"\"{quote}\""
+
         quotes = self.get_quotes()
         open(QUOTES_FILE, 'w', encoding="utf8")\
             .write('\n'.join(map(str, quotes)) + f"\n{quote}\n")
