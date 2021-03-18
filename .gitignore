@@ -4,6 +4,7 @@
 VideoEditing
 __pycache__
 output.gif
+python_env
 
 # Ignore the config for security reasons
 config.json
