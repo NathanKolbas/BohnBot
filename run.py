@@ -29,10 +29,10 @@ async def on_message(message):
         if commands[0].lower() == 'bohn':
             try:
                 tagged = message.mentions[0]
-                if tagged.id == "209731333067505664":
+                if tagged.id == 209731333067505664:
                     await message.channel.send("I will not bohn my creator")
                 else:
-                    response = (f"You've been bohned {tagged.name}")
+                    response = f"You've been bohned {tagged.name}"
                     await message.channel.send(response)
             except:
                 await message.channel.send("Usage: BohnBot bohn @username")
