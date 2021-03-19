@@ -26,7 +26,17 @@ async def on_message(message):
         helper = Helper(message.author)
         commands = message.content.split(' ', 2)
         del commands[0]
-        if commands[0].lower() == 'execute':
+        if commands[0].lower() == 'bohn':
+            try:
+                tagged = message.mentions[0]
+                if tagged.id == 209731333067505664:
+                    await message.channel.send("I will not bohn my creator")
+                else:
+                    response = f"You've been bohned {tagged.name}"
+                    await message.channel.send(response)
+            except:
+                await message.channel.send("Usage: BohnBot bohn @username")
+        elif commands[0].lower() == 'execute':
             helper.increment_count()
             argument_data = commands[1]
             if message.mentions:
@@ -101,7 +111,7 @@ async def on_message(message):
             file = helper.random_stretch_break()
             await message.channel.send(msg, file=discord.File(file, 'can_anyone_hear_me.gif'))
         elif commands[0].lower() == 'new':
-            msg = """ 
+            msg = """
 New features/improvements/commands:\n
 • Added Tweet functionality!
     - You can now use `BohnBot tweet` to get a random tweet or `BohnBot recent-tweet` to get his most recent tweet.
@@ -109,8 +119,10 @@ New features/improvements/commands:\n
 """
             await message.channel.send(msg)
         elif commands[0].lower() == 'help':
-            msg = """ 
+            msg = """
 The current available BohnBot commands are:\n
+• `BohnBot bohn @UserName`
+    - "Bohns" the mentioned user\n
 • `BohnBot execute @UserName`
     - Creates a gif of that user getting killed in Among Us
     - Use the users @ in the command to use their icon in the gif

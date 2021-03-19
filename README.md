@@ -24,6 +24,8 @@ The `BOT_TOKEN` is your Discord API key. Both `GIS_DEV_API_KEY` and `GIS_PROJECT
 
 ## Documentation
 After adding the BohnBot to your Discord server, you can run the following commands:
+  - `BohnBot bohn @UserName`
+    - "Bohns" the mentioned user
   - `BohnBot execute @UserName`
     - Overlays the user profile icon, or image search, in an Among Us gif. The student being executed after one of Bohn's clever questions  
     ![example gif](Examples/example.gif)
@@ -46,7 +48,7 @@ After adding the BohnBot to your Discord server, you can run the following comma
   - `BohnBot markov`
     - Creates a Markov chain using the quotes added to the BohnBot
   - `BohnBot stretch-break`
-    - Starts a stretch break 
+    - Starts a stretch break
   - `BohnBot quine`
     - One of Bohn's favorite puzzles
   - `BohnBot tweet`
