@@ -5,6 +5,8 @@ import os.path
 import random
 import requests
 
+from db import DB
+
 """
 Helper file for the bot run.py file. Used to keep the run file clean while adding new features and methods.
 """
@@ -17,8 +19,12 @@ BOHN_TWITTER_ID = 1543554506
 
 
 class Helper:
-    def __init__(self, author):
+    def __init__(self, author, use_db=False):
         self.author = author
+        self.use_db = use_db
+        if use_db:
+            self.db = DB()
+
         with open('config.json') as f:
             self.config = json.load(f)
 
@@ -32,6 +38,9 @@ class Helper:
         # If the quote doesn't have "" around it then add it
         if not quote.startswith("\"") and not quote.endswith("\""):
             quote = f"\"{quote}\""
+
+        if self.use_db:
+            return self.db.insert_quote(quote)
 
         quotes = self.get_quotes()
         open(QUOTES_FILE, 'w', encoding="utf8")\
@@ -52,6 +61,9 @@ class Helper:
         Gets all the quotes from Bohn stored currently in a text file
         :return: list of quotes
         """
+        if self.use_db:
+            return self.db.get_quotes()
+
         with open(QUOTES_FILE, 'r', encoding="utf8") as f:
             return [x.strip() for x in f.readlines()]
 
@@ -83,8 +95,11 @@ class Helper:
         Creates a Markov chain from the quotes.txt file to create generated Bohn messages
         :return: String
         """
-        with open(QUOTES_FILE, encoding="utf8") as f:
-            text = f.read()
+        if self.use_db:
+            text = [x[1] + '\n' for x in self.get_quotes()]
+        else:
+            with open(QUOTES_FILE, encoding="utf8") as f:
+                text = f.read()
 
         text_model = markovify.NewlineText(text)
 
@@ -121,7 +136,7 @@ class Helper:
         Gets a random quote from Bohn
         :return: String random quote
         """
-        quotes = self.get_quotes()
+        quotes = [x[1] + '\n' for x in self.get_quotes()]
         chosen = random.randint(0, len(quotes) - 1)
         return quotes[chosen]
 
@@ -141,12 +156,25 @@ class Helper:
         Removes a quote from a line in the text file
         :param line: Integer line in the text file
         """
+        if self.use_db:
+            quote_id = line
+            quote = self.db.get_quote(quote_id)[1]
+            self.db.delete_quote(quote_id)
+            self.log(f'User {self.author} removed quote id {quote_id}. Text: {quote}')
+            return
+
         quotes = self.get_quotes()
         self.log(f'User {self.author} removed quote on line {line}. Text: {quotes[line - 1]}')
         del quotes[line - 1]
         open(QUOTES_FILE, 'w', encoding="utf8").write('\n'.join(map(str, quotes)))
 
     def show_all_quotes(self):
+        if self.use_db:
+            formatted_quotes = ''
+            for line in self.db.get_quotes():
+                formatted_quotes += f"{line[0]}. {line[1]}\n"
+            return formatted_quotes
+
         quotes = self.get_quotes()
         formatted_quotes = ''
         for n, line in enumerate(quotes, start=1):

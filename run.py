@@ -1,12 +1,13 @@
 from create_gif import CreateGif, Gifs
 import discord
-import json
 from run_helper import *
 
 with open('config.json') as f:
     config = json.load(f)
 
 TOKEN = config['BOT_TOKEN']
+
+USE_DB = True
 
 client = discord.Client()
 
@@ -18,12 +19,12 @@ async def on_message(message):
         return
 
     if message.mentions and client.user == message.mentions[0] and message.content[-1] == '?':
-        helper = Helper(message.author)
+        helper = Helper(message.author, use_db=USE_DB)
         msg = helper.random_quote()
         await message.channel.send(msg)
 
     if message.content.lower().startswith('bohnbot '):
-        helper = Helper(message.author)
+        helper = Helper(message.author, use_db=USE_DB)
         commands = message.content.split(' ', 2)
         del commands[0]
         if commands[0].lower() == 'bohn':
@@ -69,11 +70,20 @@ async def on_message(message):
             del commands[0]
             if len(commands) > 0:
                 line = int(commands[0])
-                quotes = helper.get_quotes()
-                if 0 < line <= len(quotes):
-                    msg = quotes[line - 1]
+                if USE_DB:
+                    quotes_map = {}
+                    for x in helper.get_quotes():
+                        quotes_map[x[0]] = x[1]
+                    if quotes_map.get(line):
+                        msg = quotes_map[line]
+                    else:
+                        msg = f"A quote with id {line} does not exist."
                 else:
-                    msg = f"A quote at line {line} does not exist."
+                    quotes = helper.get_quotes()
+                    if 0 < line <= len(quotes):
+                        msg = quotes[line - 1]
+                    else:
+                        msg = f"A quote at line {line} does not exist."
             else:
                 msg = helper.random_quote()
             await message.channel.send(msg)
@@ -89,17 +99,27 @@ async def on_message(message):
             if add_commands[0].lower() == 'quote':
                 argument_data = add_commands[1]
                 line = helper.add_quote(argument_data)
-                msg = f"The new quote was added at line {line}"
+                msg = f"The new quote was added at line {line}" if USE_DB else f"The new quote was added with id {line}"
                 await message.channel.send(msg)
         elif commands[0].lower() == 'remove-quote':
             del commands[0]
             if message.author.guild_permissions.administrator:
                 line = int(commands[0])
-                if 0 < line <= len(helper.get_quotes()):
-                    helper.remove_quote(line)
-                    msg = f"Successfully removed quote on line {line}."
+                if USE_DB:
+                    quotes_map = {}
+                    for x in helper.get_quotes():
+                        quotes_map[x[0]] = x[1]
+                    if quotes_map.get(line):
+                        helper.remove_quote(line)
+                        msg = f"Successfully removed quote with id {line}."
+                    else:
+                        msg = f"A quote with id {line} does not exist."
                 else:
-                    msg = f"A quote at line {line} does not exist."
+                    if 0 < line <= len(helper.get_quotes()):
+                        helper.remove_quote(line)
+                        msg = f"Successfully removed quote on line {line}."
+                    else:
+                        msg = f"A quote at line {line} does not exist."
             else:
                 msg = 'You do not have the permissions to delete a quote (Administrator permission needed).'
             await message.channel.send(msg)
