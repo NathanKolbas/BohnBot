@@ -1,6 +1,8 @@
 # Editors
 .idea
 
+.env
+
 VideoEditing
 __pycache__
 output.gif
